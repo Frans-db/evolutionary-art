@@ -2,19 +2,22 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--taglist', type=str)
+    parser.add_argument('--classlist', type=str)
 
     return parser.parse_args()
 
-def load_taglist(path: str):
+def load_classlist(path: str):
     with open(path) as f:
         data = f.read()
+    for line in data.split('\n'):
+        split_point = line.find('-')
+        class_name = line[:split_point]
+        values = line[split_point+1:]
+        print(class_name, values)
 
 def main():
     args = parse_args()
-    with open(args.taglist) as f:
-        data = f.read()
-    print(data)
+    tags = load_classlist(args.classlist)
     
 
 if __name__ == '__main__':

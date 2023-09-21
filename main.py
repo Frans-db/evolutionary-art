@@ -1,3 +1,4 @@
+from html2image import Html2Image
 import argparse
 
 
@@ -34,6 +35,10 @@ def main():
     classes = load_classlist(args.classlist)
     print(classes)
     
+    hti = Html2Image()
+    hti.screenshot(
+        html_file='./index.html', save_as='out.jpg'
+    )
 
 if __name__ == '__main__':
     main()

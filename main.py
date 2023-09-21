@@ -2,13 +2,13 @@ from html2image import Html2Image
 import argparse
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument('--classlist', type=str)
 
     return parser.parse_args()
 
-def load_classlist(path: str):
+def load_classlist(path: str) -> list[str]:
     with open(path) as f:
         data = f.read()
 
@@ -30,14 +30,14 @@ def load_classlist(path: str):
     
     return classes
 
-def main():
+def main() -> None:
     args = parse_args()
     classes = load_classlist(args.classlist)
     print(classes)
     
     hti = Html2Image()
     hti.screenshot(
-        html_file='./index.html', save_as='out.jpg'
+        html_file='./html/index.html', save_as='out.jpg'
     )
 
 if __name__ == '__main__':

@@ -44,7 +44,7 @@ def main() -> None:
     with open('./html/index.html') as f:
         data = f.read()
     data = data.replace('INNER', html)
-    hti = Html2Image()
+    hti = Html2Image(output_path='./experiments')
     hti.screenshot(
         html_str=data, save_as='out.jpg'
     )

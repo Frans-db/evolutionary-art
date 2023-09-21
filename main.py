@@ -1,6 +1,6 @@
 from html2image import Html2Image
 import argparse
-
+from html import Element
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
@@ -35,10 +35,20 @@ def main() -> None:
     classes = load_classlist(args.classlist)
     print(classes)
     
+    element = Element('div', classes=['w-16', 'h-16', 'bg-red-500'])
+    child1 = Element('div', classes=['w-8', 'h-8', 'bg-green-500'])
+    child2 = Element('div', classes=['w-8', 'h-8', 'ml-8', 'bg-green-500'])
+    element.children.append(child1)
+    element.children.append(child2)
+    html = element.to_html()
+    with open('./html/index.html') as f:
+        data = f.read()
+    data = data.replace('INNER', html)
     hti = Html2Image()
     hti.screenshot(
-        html_file='./html/index.html', save_as='out.jpg'
+        html_str=data, save_as='out.jpg'
     )
+
 
 if __name__ == '__main__':
     main()

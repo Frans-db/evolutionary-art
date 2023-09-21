@@ -1,6 +1,6 @@
 from html2image import Html2Image
 import argparse
-from html import Element
+from elements import Element
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()

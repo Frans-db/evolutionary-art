@@ -23,9 +23,24 @@ class Element:
             l.extend(child.flatten())
         return l
 
-    def remove(self, element: "Element") -> bool:
+    def remove(self, target: "Element") -> bool:
         for child in self.children:
-            if child is element:
+            if child is target:
                 self.children.remove(child)
-                break
-            child.remove(element)
+                return True
+            if child.remove(target):
+                return True
+
+        return False
+
+    def replace(self, target: "Element", element: "Element") -> bool:
+        try:
+            index = self.children.index(target)
+            self.children[index] = element
+            return True
+        except ValueError:
+            for child in self.children:
+                if child.replace(target, element):
+                    return True
+        return False
+                

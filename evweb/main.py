@@ -42,31 +42,31 @@ def main() -> None:
     with open("./html/index.html") as f:
         data = f.read()
 
-    element = generate_element(
+    individual1 = Individual(element=generate_element(
         p_child=0.5,
         p_class=0.5,
         max_classes=2,
         max_children=2,
-        max_depth=1,
+        max_depth=2,
         classlist=classlist
-    )
-    individual = Individual(element=element)
-    mutated = mutate_tag(individual, classlist, p=1)
-    mutated = mutate_class(mutated, classlist, p=1)
-    print(individual.element)
-    print(mutated.element)
-    print(individual.element.size, mutated.element.size)
-    # copy = mutate_class(element)
-    # print(element)
-    # print(copy)
-    # print(id(element.children[0]), id(copy.children[0]))
-    # html = data.replace('INNER', element.to_html())
-    
-    # hti = Html2Image(output_path="./experiments")
-    # hti.screenshot(html_str=html, save_as="out.jpg")
-    # with open('./experiments/index.html', 'w+') as f:
-    #     f.write(html)
+    ))
+    individual2 = Individual(element=generate_element(
+        p_child=0.5,
+        p_class=0.5,
+        max_classes=2,
+        max_children=2,
+        max_depth=2,
+        classlist=classlist
+    ))
 
+    print(individual1.element.size, individual2.element.size)
+    print(individual1)
+    print(individual2)
+    print('--- crossover ---')
+    individual1, individual2 = crossover(individual1, individual2)
+    print(individual1.element.size, individual2.element.size)
+    print(individual1)
+    print(individual2)
 
 if __name__ == "__main__":
     main()

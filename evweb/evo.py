@@ -91,7 +91,20 @@ def mutate_class(
 def crossover(
     individual1: Individual, individual2: Individual
 ) -> tuple[Individual, Individual]:
-    pass
+    individual1 = copy.deepcopy(individual1)
+    individual2 = copy.deepcopy(individual2)
+
+    individual1_elements = individual1.element.flatten()
+    individual2_elements = individual2.element.flatten()
+    if len(individual1_elements) > 1 and len(individual2_elements) > 1:
+        individual1_element = random.choice(individual1_elements[1:])
+        individual2_element = random.choice(individual2_elements[1:])
+
+        individual1.element.replace(individual1_element, individual2_element)
+        individual2.element.replace(individual2_element, individual1_element)
+
+    return individual1, individual2
+
 
 
 def evaluate(individual: Individual) -> float:

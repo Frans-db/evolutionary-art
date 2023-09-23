@@ -3,7 +3,7 @@ import argparse
 import random
 
 from elements import Element
-from evo import Individual, generate_element
+from evo import *
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
@@ -45,17 +45,27 @@ def main() -> None:
     element = generate_element(
         p_child=0.5,
         p_class=0.5,
-        max_classes=5,
-        max_children=5,
-        max_depth=2,
+        max_classes=2,
+        max_children=2,
+        max_depth=1,
         classlist=classlist
     )
-    html = data.replace('INNER', element.to_html())
+    individual = Individual(element=element)
+    mutated = mutate_tag(individual, classlist, p=1)
+    mutated = mutate_class(mutated, classlist, p=1)
+    print(individual.element)
+    print(mutated.element)
+    print(individual.element.size, mutated.element.size)
+    # copy = mutate_class(element)
+    # print(element)
+    # print(copy)
+    # print(id(element.children[0]), id(copy.children[0]))
+    # html = data.replace('INNER', element.to_html())
     
-    hti = Html2Image(output_path="./experiments")
-    hti.screenshot(html_str=html, save_as="out.jpg")
-    with open('./experiments/index.html', 'w+') as f:
-        f.write(html)
+    # hti = Html2Image(output_path="./experiments")
+    # hti.screenshot(html_str=html, save_as="out.jpg")
+    # with open('./experiments/index.html', 'w+') as f:
+    #     f.write(html)
 
 
 if __name__ == "__main__":

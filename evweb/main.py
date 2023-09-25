@@ -1,15 +1,14 @@
 from html2image import Html2Image
-import argparse
+from tap import Tap
 import random
 
 from elements import Element
 from evo import *
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--classlist", type=str, required=True)
-
-    return parser.parse_args()
+class ArgumentParser(Tap):
+    classlist: str
+    population_size: int
+    num_generations: int
 
 
 def load_classlist(path: str) -> list[str]:
@@ -34,39 +33,32 @@ def load_classlist(path: str) -> list[str]:
 
     return classes
 
+def render():
+    hti = Html2Image(output_path='./targets/')
+    hti.screenshot(url='https://pypi.org/project/html2image/', save_as='target.png')
 
 def main() -> None:
-    args = parse_args()
+    args = ArgumentParser().parse_args()
     classlist = load_classlist(args.classlist)
-
-    with open("./html/index.html") as f:
-        data = f.read()
-
-    individual1 = Individual(element=generate_element(
+    evolution = Evolution(
         p_child=0.5,
         p_class=0.5,
-        max_classes=2,
-        max_children=2,
-        max_depth=2,
-        classlist=classlist
-    ))
-    individual2 = Individual(element=generate_element(
-        p_child=0.5,
-        p_class=0.5,
-        max_classes=2,
-        max_children=2,
-        max_depth=2,
-        classlist=classlist
-    ))
-
-    print(individual1.element.size, individual2.element.size)
-    print(individual1)
-    print(individual2)
-    print('--- crossover ---')
-    individual1, individual2 = crossover(individual1, individual2)
-    print(individual1.element.size, individual2.element.size)
-    print(individual1)
-    print(individual2)
+        max_classes=5,
+        max_children=3,
+        max_depth=3,
+        classlist=classlist,
+        p_mutate_tag=0.05,
+        p_mutate_class=0.05,
+        target_path='./targets/target.png'
+    )
+    algorithm = GeneticAlgorithm(
+        root='./experiments/',
+        name='test',
+        population_size=args.population_size,
+        num_generations=args.num_generations,
+        evolution=evolution
+    )
+    algorithm.run()
 
 if __name__ == "__main__":
     main()

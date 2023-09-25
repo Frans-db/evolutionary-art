@@ -12,14 +12,6 @@ class ArgumentParser(Tap):
 
 def main():
     element = Element(tag='div')
-    properties = [
-        RealProperty(name='width', min_value=0, max_value=100, unit='rem'),
-        RealProperty(name='height', min_value=0, max_value=100, unit='rem'),
-        RealProperty(name='padding', min_value=0, max_value=100, unit='rem'),
-        RealProperty(name='margin', min_value=0, max_value=100, unit='rem'),
-        RGBProperty(name='background-color')
-    ]
-    element.properties.extend(properties)
     print(element.to_html())
 
 if __name__ == '__main__':

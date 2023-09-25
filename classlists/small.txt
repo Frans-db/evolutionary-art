@@ -1,5 +1,0 @@
-p-[0.5,1]
-w-16
-bg-red-[50,950]
-bg-emerald-500
-bg-blue-200

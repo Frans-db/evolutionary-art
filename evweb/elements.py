@@ -1,75 +1,63 @@
 from dataclasses import dataclass, field
-from functools import reduce
-from html2image import Html2Image
-import os
+import random
 
-input_html ='''<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evolutionary Webdesign</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-white">
-    INNER
-</body>
-</html>'''
 
 @dataclass
 class Element:
     tag: str
-    classes: list[str] = field(default_factory=list)
+    properties: list["Property"] = field(default_factory=list)
     children: list["Element"] = field(default_factory=list)
 
-    @property
-    def size(self) -> int:
-        return 1 + sum([child.size for child in self.children])
-
     def to_html(self) -> str:
-        classes = " ".join(self.classes)
-        children = "\n".join([child.to_html() for child in self.children])
-        return f'<{self.tag} class="{classes}">{children}</{self.tag}>'
+        style = '; '.join([prop.to_css() for prop in self.properties])
+        children = '\n'.join([child.to_html() for child in self.children])
+        return f'<{self.tag} style="{style}">{children}</{self.tag}>'
 
-    def render(self, save_dir: str, filename: str) -> None:
-        os.makedirs(save_dir, exist_ok=True)
-        html = self.to_html()
-        html = input_html.replace('INNER', self.to_html())
-        hti = Html2Image(output_path=save_dir)
-        hti.screenshot(html_str=html, save_as=f'{filename}.png')
-        with open(os.path.join(save_dir, f'{filename}.html'), 'w+') as f:
-            f.write(html)
+@dataclass
+class Property:
+    name: str
 
 
-    def flatten(self) -> list["Element"]:
-        l = [self]
-        for child in self.children:
-            l.extend(child.flatten())
-        return l
+# padding, marging, width, height
+@dataclass
+class RealProperty(Property):
+    min_value: float
+    max_value: float
+    unit: str
+    value: float = None
 
-    def remove(self, target: "Element") -> bool:
-        for child in self.children:
-            if child is target:
-                self.children.remove(child)
-                return True
-            if child.remove(target):
-                return True
+    def __post_init__(self):
+        delta = self.max_value - self.min_value
+        self.value = self.min_value + random.random() * delta
 
-        return False
+    def to_css(self) -> str:
+        return f"{self.name}: {self.value}{self.unit}"
 
-    def replace(self, target: "Element", element: "Element") -> bool:
-        try:
-            index = self.children.index(target)
-            self.children[index] = element
-            return True
-        except ValueError:
-            for child in self.children:
-                if child.replace(target, element):
-                    return True
-        return False
-                
-    def __repr__(self) -> str:
-        representation = '.'.join([self.tag] + self.classes)
-        child_representations = ['\t' + repr(child) for child in self.children]
 
-        return '\n'.join([representation] + child_representations)
+# flex, flex-direction
+@dataclass
+class DiscreteProperty(Property):
+    values: list[str]
+    value: str = None
+
+    def __post_init__(self):
+        self.value = random.choice(self.values)
+
+    def to_css(self) -> str:
+        return f"{self.name}: {self.value}"
+
+
+# color, background-color
+@dataclass
+class RGBProperty(Property):
+    r: float = None
+    g: float = None
+    b: float = None
+
+    def __post_init__(self):
+        self.r = random.random() * 255
+        self.g = random.random() * 255
+        self.b = random.random() * 255
+
+    def to_css(self) -> str:
+        return f"{self.name}: rgb({self.r}, {self.g}, {self.b})"

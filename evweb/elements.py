@@ -36,7 +36,9 @@ class Element:
         html = self.to_html()
         html = input_html.replace('INNER', self.to_html())
         hti = Html2Image(output_path=save_dir)
-        hti.screenshot(html_str=html, save_as=filename)
+        hti.screenshot(html_str=html, save_as=f'{filename}.png')
+        with open(os.path.join(save_dir, f'{filename}.html'), 'w+') as f:
+            f.write(html)
 
 
     def flatten(self) -> list["Element"]:

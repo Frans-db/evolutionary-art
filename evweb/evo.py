@@ -19,7 +19,7 @@ class Individual:
 
     def render(self, directory: str, filename: str):
         self.element.render(directory, filename)
-        self.image_path = os.path.join(directory, filename)
+        self.image_path = os.path.join(directory, f'{filename}.png')
 
 
 @dataclass
@@ -174,7 +174,7 @@ class GeneticAlgorithm:
         self.evaluate_population(self.population)
 
         for _ in range(self.num_generations):
-            print(self.current_generation, self.best_individual.fitness)
+            print(self.current_generation, self.best_individual.fitness, self.best_individual.element.size)
             self.current_generation += 1
             offspring = self.crossover(self.population)
             offspring = [self.evolution.mutate(individual) for individual in offspring]
@@ -184,7 +184,7 @@ class GeneticAlgorithm:
 
     def evaluate_population(self, population: list[Individual]):
         for i,individual in enumerate(population):
-            filename = f'{i}.png'
+            filename = f'{i}'
             directory = os.path.join(self.root, self.name, str(self.current_generation))
             individual.render(directory, filename)
             individual.fitness = self.evolution.evaluate(individual)

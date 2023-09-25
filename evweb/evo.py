@@ -8,7 +8,7 @@ from torch.nn import MSELoss
 from torchvision.transforms import ToTensor
 
 
-from elements import Element
+from evweb.elements import Element
 
 
 @dataclass

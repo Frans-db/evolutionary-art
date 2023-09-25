@@ -36,8 +36,8 @@ class RealProperty(Property):
     def to_css(self) -> str:
         return f"{self.name}: {self.value}{self.unit}"
 
-    def mutate(self, max_nudge: float) -> None:
-        self.value = self.nudge(self.value, self.max_value)
+    def mutate(self, max_nudge: float = 0.1) -> None:
+        self.value = self.nudge(self.value, max_nudge)
         self.value = self.clamp(self.value, self.min_value, self.max_value)
 
 
@@ -53,7 +53,7 @@ class DiscreteProperty(Property):
     def to_css(self) -> str:
         return f"{self.name}: {self.value}"
 
-    def mutate(self, switch_chance: float) -> None:
+    def mutate(self, switch_chance: float = 0.1) -> None:
         if random.random() > switch_chance:
             return
         self.value = random.choice(self.values)
@@ -74,7 +74,7 @@ class RGBProperty(Property):
     def to_css(self) -> str:
         return f"{self.name}: rgb({self.r}, {self.g}, {self.b})"
 
-    def mutate(self, max_nudge: float) -> None:
+    def mutate(self, max_nudge: float = 0.1) -> None:
         self.r = self.nudge(self.r, max_nudge)
         self.r = self.clamp(self.r, 0, 255)
         self.g = self.nudge(self.g, max_nudge)

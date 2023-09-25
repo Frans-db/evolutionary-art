@@ -6,8 +6,9 @@ from .properties import Property, RealProperty, DiscreteProperty, RGBProperty
 @dataclass
 class Element:
     tag: str
-    properties: list[Property] = None
     children: list["Element"] = field(default_factory=list)
+    properties: list[Property] = None
+
 
     def __post_init__(self) -> None:
         displays = ["block", "inline", "flex"]

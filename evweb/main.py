@@ -12,6 +12,12 @@ class ArgumentParser(Tap):
 
 def main():
     element = Element(tag='div')
+    children = [
+        Element(tag='div'),
+        Element(tag='div'),
+        Element(tag='div')
+    ]
+    element.children.extend(children)
     print(element.to_html())
 
 if __name__ == '__main__':

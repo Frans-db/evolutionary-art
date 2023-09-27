@@ -8,7 +8,7 @@ class Element:
     tag: str
     children: list["Element"] = field(default_factory=list)
     properties: list[Property] = field(default_factory=list)
-
+    contents: str = None
 
     def __post_init__(self) -> None:
         displays = ["block", "inline", "flex"]
@@ -25,5 +25,10 @@ class Element:
 
     def to_html(self) -> str:
         style = "; ".join([prop.to_css() for prop in self.properties])
-        children = "\n".join([child.to_html() for child in self.children])
-        return f'<{self.tag} style="{style}">{children}</{self.tag}>'
+        children_html = [child.to_html() for child in self.children]
+        inner = '\n'.join([self.contents] + children_html)
+        return f'<{self.tag} style="{style}">{inner}</{self.tag}>'
+
+
+def get_default_element() -> Element:
+    root = Element('div')

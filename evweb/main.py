@@ -1,6 +1,6 @@
 from tap import Tap
 
-from elements import *
+from evolution import *
 
 class ArgumentParser(Tap):
     classlist: str
@@ -9,8 +9,12 @@ class ArgumentParser(Tap):
 
 
 def main():
-    element = get_default_element()
-    print(element.to_html())
+    experiment = Experiment(
+        root='./experiments',
+        name='test_experiment',
+        population_size=100
+    )
+    print(experiment)
 
 if __name__ == '__main__':
     main()

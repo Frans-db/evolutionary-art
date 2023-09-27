@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Callable
 import os
 
-from ..elements import Element, get_default_element
+from .elements import Element, get_default_element
 
 
 @dataclass
@@ -14,7 +14,7 @@ class Experiment:
     experiment_root: str = None
     population: list[Element] = None
 
-    evaluate: Callable[[Element], float]
+    evaluate: Callable[[Element], float] = None
 
     def __post_init__(self) -> None:
         self.experiment_root = os.path.join(self.root, self.name)

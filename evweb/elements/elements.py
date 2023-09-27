@@ -7,13 +7,13 @@ from .properties import Property, RealProperty, DiscreteProperty, RGBProperty
 class Element:
     tag: str
     children: list["Element"] = field(default_factory=list)
-    properties: list[Property] = None
+    properties: list[Property] = field(default_factory=list)
 
 
     def __post_init__(self) -> None:
         displays = ["block", "inline", "flex"]
         flex_directions = ["row", "row-reverse", "column", "column-reverse"]
-        self.properties = [
+        self.properties.extend([
             RealProperty(name="width", min_value=0, max_value=100, unit="rem"),
             RealProperty(name="height", min_value=0, max_value=100, unit="rem"),
             RealProperty(name="padding", min_value=0, max_value=100, unit="rem"),
@@ -21,7 +21,7 @@ class Element:
             RGBProperty(name="background-color"),
             DiscreteProperty("display", values=displays),
             DiscreteProperty("flex-direction", values=flex_directions),
-        ]
+        ])
 
     def to_html(self) -> str:
         style = "; ".join([prop.to_css() for prop in self.properties])

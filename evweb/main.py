@@ -11,14 +11,15 @@ class ArgumentParser(Tap):
 
 
 def main():
-    element = Element(tag='div')
-    children = [
-        Element(tag='div'),
-        Element(tag='div'),
-        Element(tag='div')
-    ]
-    element.children.extend(children)
-    print(element.to_html())
+    element1 = Element(tag='div')
+    element1.properties.append(RGBProperty(name='background-color'))
+    element2 = Element(tag='div')
+    element2.properties.append(RGBProperty(name='color'))
+    print(element1.properties[0])
+    print(element2.properties[0])
+    element1.properties[0].mutate()
+    print(element1.properties[0])
+    print(element2.properties[0])
 
 if __name__ == '__main__':
     main()

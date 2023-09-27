@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from abc import ABC, NotImplementedError
+from dataclasses import dataclass, field
+from abc import ABC
 import random
 
 
@@ -40,6 +40,9 @@ class RealProperty(Property):
         self.value = self.nudge(self.value, max_nudge)
         self.value = self.clamp(self.value, self.min_value, self.max_value)
 
+    def __str__(self) -> str:
+        return self.to_css()
+
 
 # display, flex-direction
 @dataclass
@@ -58,26 +61,32 @@ class DiscreteProperty(Property):
             return
         self.value = random.choice(self.values)
 
+    def __str__(self) -> str:
+        return self.to_css()
+
 
 # color, background-color
 @dataclass
 class RGBProperty(Property):
-    r: float = None
-    g: float = None
-    b: float = None
+    r: RealProperty = None
+    g: RealProperty = None
+    b: RealProperty = None
 
     def __post_init__(self) -> None:
-        self.r = random.random() * 255
-        self.g = random.random() * 255
-        self.b = random.random() * 255
+        self.r = RealProperty("red", 0, 255, "")
+        self.g = RealProperty("green", 0, 255, "")
+        self.b = RealProperty("blue", 0, 255, "")
 
     def to_css(self) -> str:
-        return f"{self.name}: rgb({self.r}, {self.g}, {self.b})"
+        r = round(self.r.value)
+        g = round(self.g.value)
+        b = round(self.b.value)
+        return f"{self.name}: rgb({r}, {g}, {b})"
 
     def mutate(self, max_nudge: float = 0.1) -> None:
-        self.r = self.nudge(self.r, max_nudge)
-        self.r = self.clamp(self.r, 0, 255)
-        self.g = self.nudge(self.g, max_nudge)
-        self.g = self.clamp(self.g, 0, 255)
-        self.b = self.nudge(self.b, max_nudge)
-        self.b = self.clamp(self.b, 0, 255)
+        self.r.mutate(max_nudge=max_nudge)
+        self.g.mutate(max_nudge=max_nudge)
+        self.b.mutate(max_nudge=max_nudge)
+
+    def __str__(self) -> str:
+        return self.to_css()

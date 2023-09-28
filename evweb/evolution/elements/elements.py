@@ -39,7 +39,7 @@ class Element:
 
     def render(self, directory: str, filename: str) -> str:
         html = self.to_html()
-        image_filename = f'{filename}.png'
+        image_filename = f"{filename}.png"
         # Html2Image creates the output directory here including parent directories
         renderer = Html2Image(output_path=directory)
         renderer.screenshot(html_str=html, save_as=image_filename)

@@ -20,6 +20,7 @@ class Element:
     def __post_init__(self) -> None:
         displays = ["block", "inline", "flex"]
         flex_directions = ["row", "row-reverse", "column", "column-reverse"]
+        # Currently using default properties. This could be changed to use a config
         properties = [
             RealProperty(name="width", min_value=0, max_value=100, unit="rem"),
             RealProperty(name="height", min_value=0, max_value=100, unit="rem"),
@@ -47,6 +48,41 @@ class Element:
             f.write(html)
 
         return os.path.join(directory, image_filename)
+
+    # tree operations
+
+    def flatten(self) -> list["Element"]:
+        flat = [self]
+        for child in self.children:
+            flat.extend(child.flatten())
+        return flat
+
+    def remove(self, target: "Element") -> bool:
+        for child in self.children:
+            # Child is target. Remove from list and return
+            if child is target:
+                self.children.remove(child)
+                return True
+            # Child contained target one if its (grand)children.
+            elif child.remove(target):
+                return True
+        # Target was not found
+        return False
+
+    def replace(self, target: "Element", element: "Element") -> bool:
+        try:
+            # Target is in children
+            index = self.children.index(target)
+            # Replace child with target
+            self.children[index] = target
+            return True
+        except ValueError:
+            # Target is not in children, search for it in children's children
+            for child in self.children:
+                if child.replace(target, element):
+                    return True
+        # Target was not found
+        return False
 
 
 def get_default_element() -> Element:

@@ -17,6 +17,7 @@ class Experiment:
     evaluate: Callable[[Element], float]
     crossover: Callable[[Element, Element], tuple[Element, Element]]
     selection: Callable[[list[Element]], list[Element]]
+    mutate: Callable[[Element], Element]
 
     current_generation: int = 0
     experiment_root: str = None
@@ -53,8 +54,8 @@ class Experiment:
             individual_b = population[i + 1]
             # Create 2 children using offspring
             child_a, child_b = self.crossover(individual_a, individual_b)
-            offspring.append(child_a)
-            offspring.append(child_b)
+            offspring.append(self.mutate(child_a))
+            offspring.append(self.mutate(child_b))
         return offspring
 
     def run(self) -> None:
@@ -65,9 +66,8 @@ class Experiment:
         for _ in range(self.number_of_generations):
             print(f'Generation {self.current_generation}: {self.best_individual.fitness}')
             self.current_generation += 1
-            # crossover
+            # crossover & mutation
             offspring = self.create_offspring(self.population)
-            # TODO: mutation
             # evaluation
             self.evaluate_population(offspring)
             # selection

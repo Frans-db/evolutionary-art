@@ -66,6 +66,12 @@ def tournament_selection(population: list[Element]) -> list[Element]:
     return selection
 
 
+def mutate(individual: Element) -> Element:
+    individual = copy.deepcopy(individual)
+    for property in individual.properties:
+        if random.random() < 0.05:
+            property.mutate()
+
 def render_page(url: str, filename: str) -> None:
     renderer = Html2Image(output_path="./targets")
     renderer.screenshot(url=url, save_as=filename)
@@ -75,11 +81,12 @@ def main():
     experiment = Experiment(
         root="./experiments",
         name="test_experiment",
-        population_size=10,
-        number_of_generations=10,
+        population_size=50,
+        number_of_generations=100,
         evaluate=evaluate_factory("./targets/html2image.png"),
         crossover=crossover,
         selection=tournament_selection,
+        mutate=mutate
     )
     experiment.run()
 

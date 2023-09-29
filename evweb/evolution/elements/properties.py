@@ -99,5 +99,8 @@ class StaticProperty(Property):
     def to_css(self) -> str:
         return f"{self.name}: {self.value}"
 
+    def mutate(self) -> None:
+        pass
+
     def __str__(self) -> str:
         return self.to_css()

@@ -15,6 +15,15 @@ class ArgumentParser(Tap):
     num_generations: int
 
 
+# TODO V3:
+# - Make everything generic -> use individual
+#   - Element can inherit Individual
+# - Multiple crossovers (uniform, tree, etc.)
+# - Experiment needs to run on any individual
+#   - Remove render functionality, this needs to be handled elsewhere
+#   - Make population initialization an input function
+#   - Add logging to experiment
+
 def evaluate_factory(image_path: str) -> Callable[[Tensor], float]:
     loss = MSELoss(reduction="sum")
     target_image = load_image(image_path)

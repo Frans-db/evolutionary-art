@@ -42,6 +42,7 @@ class Experiment:
                 not self.best_individual
                 or individual.fitness < self.best_individual.fitness
             ):
+                print(f'Best: {self.current_generation} / {individual_index}')
                 self.best_individual = individual
 
     def create_offspring(self, population: list[Element]) -> list[Element]:

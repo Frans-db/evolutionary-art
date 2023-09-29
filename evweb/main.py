@@ -71,6 +71,7 @@ def mutate(individual: Element) -> Element:
     for property in individual.properties:
         if random.random() < 0.05:
             property.mutate()
+    return individual
 
 def render_page(url: str, filename: str) -> None:
     renderer = Html2Image(output_path="./targets")
@@ -81,7 +82,7 @@ def main():
     experiment = Experiment(
         root="./experiments",
         name="test_experiment",
-        population_size=50,
+        population_size=200,
         number_of_generations=100,
         evaluate=evaluate_factory("./targets/html2image.png"),
         crossover=crossover,
@@ -93,3 +94,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# 2568732.75

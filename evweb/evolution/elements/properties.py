@@ -90,3 +90,14 @@ class RGBProperty(Property):
 
     def __str__(self) -> str:
         return self.to_css()
+
+
+@dataclass
+class StaticProperty(Property):
+    value: str
+
+    def to_css(self) -> str:
+        return f"{self.name}: {self.value}"
+
+    def __str__(self) -> str:
+        return self.to_css()

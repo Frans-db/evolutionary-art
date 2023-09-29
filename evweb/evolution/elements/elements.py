@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from html2image import Html2Image
 import os
 
-from .properties import Property, RealProperty, DiscreteProperty, RGBProperty
+from .properties import Property, RealProperty, DiscreteProperty, RGBProperty, StaticProperty
 
 
 @dataclass
@@ -86,7 +86,8 @@ class Element:
 
 
 def get_default_element() -> Element:
-    root = Element("div")
+    root = Element("body")
+    root.properties = [StaticProperty('background-color', 'rgb(255, 255, 255)')]
     for _ in range(5):
         child = Element("div")
         child.children.append(Element("div"))

@@ -1,10 +1,4 @@
 from tap import Tap
-from typing import Callable
-from torch import Tensor
-from torch.nn import MSELoss
-from html2image import Html2Image
-import copy
-import random
 
 from evolution import GeneticAlgorithm, Individual
 
@@ -28,13 +22,18 @@ class ArgumentParser(Tap):
 def main():
     individual = Individual()
     algorithm = GeneticAlgorithm(
-        name='test',
-        root='./experiments'
+        experiment_name="test",
+        root="./experiments",
+        population_size=100,
+        number_of_generations=100,
+        initialise_individual=lambda: 0,
+        evaluate=lambda x: 0,
+        crossover=lambda x, y: 0,
+        mutate=lambda x: 0,
+        comparator="<",
     )
+    print(algorithm)
 
 
 if __name__ == "__main__":
     main()
-
-
-# 2568732.75

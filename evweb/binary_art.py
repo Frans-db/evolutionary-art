@@ -16,55 +16,61 @@ class ArgumentParser(Tap):
 
 
 class BinaryIndividual(Individual):
-    num_triangles: int
-    canvas_size: int
-    genome_length: int
     genome: npt.NDArray
+    genome_length: int
+    resolution: int
 
 
-    def __init__(self, number_of_triangles: int, canvas_size: int) -> None:
-        self.canvas_size = canvas_size
-        self.bits_per_coordinate = int(np.log2(canvas_size))
-        # 24 bits for colours and 6 positions
-        self.bits_per_triangle = 6*self.bits_per_coordinate * 24
-        self.genome_length = self.bits_per_triangle * number_of_triangles
-        self.genome = np.random.choice((0, 1), size=self.genome_length)
+    def __init__(self, number_of_triangles: int, resolution: int) -> None:
+        self.genome = []
+        self.genome_length = number_of_triangles * 10
+        for _ in range(number_of_triangles):
+            self.genome.extend([random.random(),random.random(),random.random(),random.random()])
+            x,y = random.random(), random.random()
+            for _ in range(3):
+                self.genome.append(x + random.random() - 0.5)
+                self.genome.append(y + random.random() - 0.5)
+        self.genome = np.array(self.genome)
+        self.resolution = resolution
 
 
-    def binary2int(self, binary_array):
-        return int(binary_array.dot(2**np.arange(binary_array.size)[::-1]))
-
-    def render(self):
-        image = Image.new('RGB', (self.canvas_size, self.canvas_size), color=(255, 255, 255))
+    def render(self, resolution: int = None):
+        if resolution is None:
+            resolution = self.resolution
+        image = Image.new('RGB', (resolution, resolution), color=(255, 255, 255))
         draw = ImageDraw.Draw(image, 'RGBA')
-        for i in range(self.genome_length // self.bits_per_triangle):
-            binary = self.genome[i*self.bits_per_triangle:(i+1)*self.bits_per_triangle]
-            r = self.binary2int(binary[0:8])
-            g = self.binary2int(binary[8:16])
-            b = self.binary2int(binary[16:24])
-            coordinate_binary = binary[24:]
-            triangles = []
-            for j in range(3):
-                x = self.binary2int(coordinate_binary[j*self.bits_per_coordinate:(j+1)*self.bits_per_coordinate])
-                y = self.binary2int(coordinate_binary[(j+1)*self.bits_per_coordinate:(j+2)*self.bits_per_coordinate])
-                triangles.append((x,y))
 
-            draw.polygon(xy=triangles, fill=(r, g, b, 200))
+        for i in range(self.genome_length // 10):
+            r = round(255 * self.genome[10*i+0])
+            g = round(255 * self.genome[10*i+1])
+            b = round(255 * self.genome[10*i+2])
+            o = round(255 * self.genome[10*i+3])
+
+            x1 = round(resolution * self.genome[10*i+4])
+            y1 = round(resolution * self.genome[10*i+5])
+            x2 = round(resolution * self.genome[10*i+6])
+            y2 = round(resolution * self.genome[10*i+7])
+            x3 = round(resolution * self.genome[10*i+8])
+            y3 = round(resolution * self.genome[10*i+9])
+            triangles = [(x1,y1),(x2,y2),(x3,y3)]
+            draw.polygon(xy=triangles, fill=(r, g, b, o))
 
         del draw
         return np.asanyarray(image)
 
 
-def initialise_factory(number_of_triangles: int, canvas_size: int) -> Callable[[], BinaryIndividual]:
+def initialise_factory(number_of_triangles: int, resolution: int) -> Callable[[], BinaryIndividual]:
     def initialise_individual() -> BinaryIndividual:
-        # Triangle has 3 coordinates (x and y) and 3 colours (r, g, b)
-        return BinaryIndividual(number_of_triangles = number_of_triangles, canvas_size = canvas_size)
+        return BinaryIndividual(number_of_triangles = number_of_triangles, resolution = resolution)
     return initialise_individual
 
 
+def mse(object1, object2):
+    return np.square(object1 - object2).sum()
+
 def evaluate_factory(target) -> Callable[[BinaryIndividual], float]:
     def evaluate(individual: BinaryIndividual) -> float:
-        return np.square(target - individual.render()).sum()
+        return mse(target, individual.render())
     return evaluate
 
 def uniform_crossover(
@@ -97,10 +103,12 @@ def one_point_crossover(
 
 def mutate(individual: BinaryIndividual) -> BinaryIndividual:
     individual = copy.deepcopy(individual)
-    mutation_chance = 0.1
-    probabilities = (1-mutation_chance, mutation_chance)
-    mutation = np.random.choice((0, 1), size=individual.genome_length, p=probabilities)
-    individual.genome = (individual.genome + mutation) % 2
+
+    mutated_genes = np.random.choice((0, 1), size=individual.genome_length, p=(0.95, 0.05))
+    mutation = (np.random.random(individual.genome_length) - 0.5)
+
+    individual.genome += mutated_genes * mutation
+    individual.genome = individual.genome.clip(min=0, max=1)
 
     return individual
 
@@ -109,6 +117,8 @@ def main():
     target = Image.open("./targets/monalisa.jpg")
     target = target.resize((64, 64))
     target = np.asarray(target)
+    # target = np.zeros((64, 64, 3))
+
     im = Image.fromarray(np.uint8(target))
     im.save("./monalisa.png")
 
@@ -116,15 +126,17 @@ def main():
         experiment_name="binary",
         root="./experiments",
         population_size=50,
-        number_of_generations=100,
+        number_of_generations=400,
         comparator="<",
-        initialise_individual=initialise_factory(number_of_triangles = 125, canvas_size = 64),
+        initialise_individual=initialise_factory(number_of_triangles = 125, resolution = 64),
         evaluate=evaluate_factory(target),
         crossover=one_point_crossover,
         mutate=mutate,
     )
     algorithm.run()
-    im = Image.fromarray(np.uint8(algorithm.best_individual.render()))
+    best = algorithm.best_individual.render()
+    im = Image.fromarray(np.uint8(best))
+    print(mse(best, target))
     im.save("./best.png")
 
 

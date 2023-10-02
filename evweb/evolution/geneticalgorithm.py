@@ -50,8 +50,8 @@ class GeneticAlgorithm:
         # TODO: Allow for multithreaded crossover
         for i in range(len(population) // 2):
             # Select 2 individuals from the population
-            individual_a = population[i]
-            individual_b = population[i + 1]
+            individual_a = population[2*i]
+            individual_b = population[2*i + 1]
             # Create 2 children using crossover
             child_a, child_b = self.crossover(individual_a, individual_b)
             # Mutate children and add them to the offspring
@@ -67,7 +67,7 @@ class GeneticAlgorithm:
         return best_individual
 
     def tournament_selection(self, population: list[Individual]) -> list[Individual]:
-        tournament_size = 4
+        tournament_size = 2
         number_of_rounds = tournament_size // 2
         selection = []
         for _ in range(number_of_rounds):
@@ -95,8 +95,6 @@ class GeneticAlgorithm:
             offspring = self.create_offspring(self.population)
             # evaluate offspring
             self.evaluate_population(offspring)
-            im = Image.fromarray(np.uint8(self.best_individual.render()))
-            im.save(f"./experiments/{self.current_generation}.png")
             # select from population + offspring
             selection = self.tournament_selection(self.population + offspring)
             # set population to selected

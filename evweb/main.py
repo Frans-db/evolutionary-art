@@ -24,8 +24,8 @@ def main():
     algorithm = GeneticAlgorithm(
         experiment_name="test",
         root="./experiments",
-        population_size=100,
-        number_of_generations=100,
+        population_size=50,
+        number_of_generations=300,
         initialise_individual=lambda: 0,
         evaluate=lambda x: 0,
         crossover=lambda x, y: 0,

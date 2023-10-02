@@ -3,6 +3,8 @@ from typing import Callable
 import operator
 import os
 import random
+from PIL import Image
+import numpy as np
 
 from .individual import Individual
 
@@ -35,6 +37,7 @@ class GeneticAlgorithm:
             self.cmp = operator.gt
 
     def evaluate_population(self, population: list[Individual]) -> None:
+        # TODO: Allow for multithreaded evaluation
         for individual in population:
             individual.fitness = self.evaluate(individual)
             # Replace best individual if this one is better
@@ -44,6 +47,7 @@ class GeneticAlgorithm:
     def create_offspring(self, population: list[Individual]) -> list[Individual]:
         offspring = []
         random.shuffle(population)
+        # TODO: Allow for multithreaded crossover
         for i in range(len(population) // 2):
             # Select 2 individuals from the population
             individual_a = population[i]
@@ -91,6 +95,8 @@ class GeneticAlgorithm:
             offspring = self.create_offspring(self.population)
             # evaluate offspring
             self.evaluate_population(offspring)
+            im = Image.fromarray(np.uint8(self.best_individual.render()))
+            im.save(f"./experiments/{self.current_generation}.png")
             # select from population + offspring
             selection = self.tournament_selection(self.population + offspring)
             # set population to selected

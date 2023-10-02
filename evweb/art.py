@@ -59,7 +59,7 @@ class Art(Individual):
 
 
 def initialise_individual() -> Art:
-    return Art(num_squares=512, size=256)
+    return Art(num_squares=1, size=256)
 
 
 def evaluate_factory(target) -> Callable[[Art], float]:

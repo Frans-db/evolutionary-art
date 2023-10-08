@@ -5,7 +5,7 @@ const internalResolution = 75;
 const displayResolution = 256;
 const pixelDataSize = internalResolution * internalResolution * 4
 
-const numberOfPolygons = 1024;
+const numberOfPolygons = 125;
 const numberOfVertices = 3;
 const geneSize = 4 + numberOfVertices * 2; // 4 for colour, 6 for positions
 const dnaSize = numberOfPolygons * geneSize;
@@ -196,5 +196,5 @@ window.onload = function() {
     setCanvasProperties(outputCanvas, displayResolution);
     setCanvasProperties(workingCanvas, internalResolution);
 
-    image.src = './images/frans.jpg';
+    image.src = './images/monalisa.jpg';
 }

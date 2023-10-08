@@ -7,13 +7,13 @@ from PIL import Image, ImageDraw
 import math
 
 number_of_generations = 1000
-population_size = 256
-number_of_polygons = 256
+population_size = 50
+number_of_polygons = 125
 number_of_vertices = 3
-resolution = 128
+resolution = 75
 
 selection_cutoff = 0.15
-mutation_chance = 0.05
+mutation_chance = 0.01
 mutation_amount = 0.1
 
 gene_size = 4 + number_of_vertices * 2
@@ -147,7 +147,7 @@ class Population:
 
 
 def main():
-    target = Image.open("./targets/frans.png")
+    target = Image.open("./targets/monalisa.jpg")
     target = target.resize((resolution, resolution))
     target = np.asarray(target)
 

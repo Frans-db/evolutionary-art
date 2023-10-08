@@ -66,7 +66,7 @@ def initialise_factory(number_of_triangles: int, resolution: int) -> Callable[[]
 
 
 def mse(object1, object2):
-    return np.square(object1 - object2).sum()
+    return (object1 - object2).sum()
 
 def evaluate_factory(target) -> Callable[[BinaryIndividual], float]:
     def evaluate(individual: BinaryIndividual) -> float:

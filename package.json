@@ -1,4 +1,15 @@
 {
+  "name": "evolutionary-webdesign",
+  "version": "1.0.0",
+  "description": "Approximate input images using triangles with evolutionary algorithms.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
     "typescript": "^5.2.2"
   }

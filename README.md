@@ -1,3 +1,3 @@
-# Evolutionary Webdesign
+# Evolutionary Art
 
-Automatically generate HTML and CSS to approximate an input image using evolutionary algorithms.
+Approximate input images using triangles with evolutionary algorithms.

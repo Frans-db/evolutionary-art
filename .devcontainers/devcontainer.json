@@ -1,0 +1,6 @@
+{
+	"name": "evolutionary-webdesign",
+	"build": {
+		"dockerfile": "Dockerfile"
+	}
+}

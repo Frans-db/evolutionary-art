@@ -534,15 +534,19 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
-.h-16 {
-  height: 4rem;
+.flex {
+  display: flex;
 }
 
-.w-16 {
-  width: 4rem;
+.flex-row {
+  flex-direction: row;
 }
 
-.bg-black {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+.border {
+  border-width: 1px;
+}
+
+.border-black {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
 }
